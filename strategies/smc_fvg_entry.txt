@@ -1,0 +1,51 @@
+STRATEGY_NAME: SMC Fair Value Gap Entry
+STRATEGY_ID: smc_fvg_entry
+VERSION: 1.0
+AUTHOR: Ovi
+MARKET: crypto, forex
+DIRECTION: both
+HTF: 1d
+MTF: 4h
+LTF: 15m
+
+CONCEPT:
+Smart money leaves Fair Value Gaps (imbalances) when they enter positions
+aggressively. Price tends to return to fill these gaps before continuing
+in the original direction. We enter when price returns to an unfilled FVG
+aligned with HTF bias.
+
+CONDITION_1: HTF (1D) trend is clear — strong directional move in last 5 candles
+CONDITION_2: MTF (4H) shows a Fair Value Gap — 3-candle pattern with a gap
+CONDITION_3: FVG is unfilled — price has not returned to the gap zone yet
+CONDITION_4: Current price is approaching the FVG from the correct direction
+
+ENTRY_TRIGGER:
+Price enters the FVG zone on LTF (15m).
+Wait for a 15m candle to close in the direction of the HTF trend inside the FVG.
+Enter on the next candle open.
+
+ENTRY_TYPE: limit
+STOP_PLACEMENT:
+Below the lowest point of the FVG zone for longs.
+Above the highest point of the FVG zone for shorts.
+Add 0.1% buffer.
+
+STOP_TYPE: structure_based
+TARGET_1: 50% of position at 1:1 R:R
+TARGET_2: Remainder at next structure level / liquidity
+TARGET_TYPE: structure_level
+MINIMUM_RR: 2.0
+
+INVALIDATION_1: Price closes a full candle through the FVG without reaction
+INVALIDATION_2: HTF trend breaks — daily closes opposite direction
+INVALIDATION_3: FVG is more than 48 hours old (stale)
+
+AVOID_1: High impact news within 30 minutes
+AVOID_2: Price in clear consolidation range on HTF
+AVOID_3: Multiple overlapping FVGs — too complex
+
+DETECT_STEP_1: Get last 50 candles on MTF (4H)
+DETECT_STEP_2: Scan for FVG — find 3-candle pattern where candle[i].low > candle[i-2].high (bullish FVG) or candle[i].high < candle[i-2].low (bearish FVG)
+DETECT_STEP_3: Check FVG is unfilled — no subsequent candle has traded through the gap zone
+DETECT_STEP_4: Check current price is within 0.5% of entering the FVG zone
+DETECT_STEP_5: Confirm HTF trend direction matches FVG direction

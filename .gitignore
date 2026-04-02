@@ -1,0 +1,33 @@
+# Secrets
+backend/.env
+frontend/.env
+frontend/.env.production
+*firebase-adminsdk*.json
+
+# Keep config JSONs but exclude secrets
+!package.json
+!package-lock.json
+!firebase.json
+!.firebaserc
+!railway.json
+
+# Python
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Node
+frontend/node_modules/
+mobile/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Expo
+mobile/.expo/
+mobile/dist/
+
+# OS
+.DS_Store
+Thumbs.db

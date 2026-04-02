@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "signals": "Señales",
+    "chart": "Gráfico",
+    "positions": "Posiciones",
+    "analytics": "Analítica",
+    "settings": "Ajustes"
+  },
+  "signal": {
+    "long": "LARGO",
+    "short": "CORTO",
+    "confidence": "Confianza",
+    "entry": "Entrada",
+    "stop": "Stop",
+    "target": "Objetivo",
+    "rr": "R:R",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "pattern": "Patrón",
+    "ai_note": "Análisis IA"
+  },
+  "mode": {
+    "auto": "Auto Total",
+    "semi": "Semi-Auto"
+  },
+  "settings": {
+    "profile": "Perfil",
+    "api_keys": "Claves API",
+    "strategies": "Estrategias",
+    "risk": "Gestión de Riesgo",
+    "alerts": "Alertas",
+    "language": "Idioma",
+    "theme": "Tema"
+  }
+}

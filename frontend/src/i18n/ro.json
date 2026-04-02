@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "signals": "Semnale",
+    "chart": "Grafic",
+    "positions": "Poziții",
+    "analytics": "Analize",
+    "settings": "Setări"
+  },
+  "signal": {
+    "long": "LONG",
+    "short": "SHORT",
+    "confidence": "Încredere",
+    "entry": "Intrare",
+    "stop": "Stop",
+    "target": "Țintă",
+    "rr": "R:R",
+    "approve": "Aprobă",
+    "reject": "Respinge",
+    "pattern": "Tipar",
+    "ai_note": "Analiză AI"
+  },
+  "mode": {
+    "auto": "Auto Total",
+    "semi": "Semi-Auto"
+  },
+  "settings": {
+    "profile": "Profil",
+    "api_keys": "Chei API",
+    "strategies": "Strategii",
+    "risk": "Gestionare Risc",
+    "alerts": "Alerte",
+    "language": "Limbă",
+    "theme": "Temă"
+  }
+}

@@ -1,0 +1,86 @@
+The BLARE Strategy Extraction Prompt
+Copy this entire block and paste it into Claude (or DeepSeek) with the YouTube transcript below it:
+You are a systematic trading strategy extractor for BLARE,
+an AI-powered multi-market trading platform.
+
+Analyze this trading video transcript and extract ONLY
+what is explicitly stated. Do not add your own knowledge
+or opinions. Be as precise and literal as possible.
+
+Answer each section below:
+
+---
+
+1. STRATEGY NAME
+What does the trader call this setup? If unnamed, describe it in 5 words max.
+
+2. MARKET & TIMEFRAMES
+- What market is this for? (crypto / forex / indices / commodities / all)
+- What timeframe is used to identify the setup? (HTF bias)
+- What timeframe does the pattern form on? (MTF)
+- What timeframe is used for entry? (LTF)
+
+3. CORE CONCEPT (2-4 sentences)
+WHY does this setup work according to the trader?
+Who is being trapped? What is smart money doing?
+What is the underlying logic?
+
+4. CONDITIONS - list every condition that must be TRUE before looking for entry.
+Be specific. Include candle behavior, structure, price levels.
+Number each one.
+
+5. ENTRY TRIGGER
+What is the EXACT moment to enter?
+What specific candle or price action confirms the entry?
+Market order or limit order?
+
+6. STOP LOSS
+Where EXACTLY does the trader place the stop?
+Any specific buffer mentioned?
+
+7. TAKE PROFIT / TARGETS
+Where is Target 1? (partial profits)
+Where is Target 2? (runner / full target)
+Does the trader mention a minimum R:R ratio?
+
+8. INVALIDATION
+What makes this setup invalid BEFORE entry?
+What makes the trader exit early if already in?
+Number each condition.
+
+9. FILTERS - what does the trader say to AVOID?
+News events? Specific sessions? Ranging markets?
+Number each one.
+
+10. DETECTION RULES (for coding)
+Break the pattern down into the simplest possible
+step-by-step detection logic.
+Write it as if explaining to a programmer.
+Example: "Step 1: find the highest high in last 20 candles"
+Number each step.
+
+11. KEY QUOTES
+Pull 3-5 direct quotes that best describe the core logic.
+Use exact words from the transcript.
+
+12. EXAMPLES
+List any specific chart examples or scenarios the trader
+walked through. Include price levels if mentioned.
+
+13. NOTES
+Any edge cases, warnings, or nuances the trader mentioned
+that don't fit above.
+
+---
+
+TRANSCRIPT:
+[paste transcript here]
+
+How to get the YouTube transcript
+1. Open any YouTube video 
+2. Click ... (three dots) below the video 
+3. Click Show transcript 
+4. Click the three dots inside the transcript panel 
+5. Toggle off timestamps 
+6. Select all ? copy ? paste into the prompt above
+

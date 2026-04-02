@@ -1,0 +1,16 @@
+{
+  "name": "blare-desktop",
+  "version": "1.0.0",
+  "description": "BLARE Desktop Client",
+  "main": "electron.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "Ovi",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "electron": "^29.1.1",
+    "electron-builder": "^24.13.3"
+  }
+}

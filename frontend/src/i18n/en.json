@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "signals": "Signals",
+    "chart": "Chart",
+    "positions": "Positions",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "signal": {
+    "long": "LONG",
+    "short": "SHORT",
+    "confidence": "Confidence",
+    "entry": "Entry",
+    "stop": "Stop",
+    "target": "Target",
+    "rr": "R:R",
+    "approve": "Approve",
+    "reject": "Reject",
+    "pattern": "Pattern",
+    "ai_note": "AI Analysis"
+  },
+  "mode": {
+    "auto": "Full Auto",
+    "semi": "Semi-Auto"
+  },
+  "settings": {
+    "profile": "Profile",
+    "api_keys": "API Keys",
+    "strategies": "Strategies",
+    "risk": "Risk Settings",
+    "alerts": "Alerts",
+    "language": "Language",
+    "theme": "Theme"
+  }
+}

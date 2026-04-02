@@ -1,0 +1,37 @@
+STRATEGY_NAME: Classic Double Bottom
+STRATEGY_ID: classic_double_bottom
+VERSION: 1.0
+AUTHOR: Ovi
+MARKET: crypto, forex, indices, commodities
+DIRECTION: long
+HTF: 1d
+MTF: 4h
+LTF: 15m
+
+CONCEPT:
+A Double Bottom is a bullish reversal pattern where price tests the same
+support level twice and fails to break lower both times. It indicates
+that sellers are losing strength at that price level and buyers are
+stepping in with conviction.
+
+CONDITION_1: Two distinct lows at approximately the same price level (within 1.5%)
+CONDITION_2: A clear peak between the two lows (neckline)
+CONDITION_3: Price approaching or breaking the neckline on the second bottom
+CONDITION_4: Volume ideally higher on the second bottom or neckline break
+
+ENTRY_TRIGGER: Breakout and close above the neckline (peak between the two lows)
+ENTRY_TYPE: breakout or limit on retest
+STOP_PLACEMENT: Below the lower of the two bottoms with 0.2% buffer
+STOP_TYPE: structure_based
+TARGET_1: 50% at measured move (neckline + distance from bottom to neckline)
+TARGET_2: Previous significant resistance
+MINIMUM_RR: 2.0
+
+INVALIDATION_1: Price closes below either bottom
+INVALIDATION_2: Neckline breaks but immediately reverses back below
+
+DETECT_STEP_1: Find swing lows in last 40 candles
+DETECT_STEP_2: Identify two lows within 1.5% of each other
+DETECT_STEP_3: Find the peak between them (neckline)
+DETECT_STEP_4: Check if current price is near or above neckline
+DETECT_STEP_5: Calculate measured move target
