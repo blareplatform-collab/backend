@@ -41,7 +41,16 @@ APP_PORT = settings.app_port
 IS_DEV = APP_ENV == "development"
 
 FIREBASE_PROJECT_ID = settings.firebase_project_id
-FIREBASE_PRIVATE_KEY = settings.firebase_private_key.replace("\\n", "\n")
+def _normalize_private_key(raw: str) -> str:
+    """Handle Railway/env var encoding where newlines may be literal \\n."""
+    key = raw.strip()
+    if "\\n" in key:
+        key = key.replace("\\n", "\n")
+    if not key.startswith("-----BEGIN"):
+        key = key.encode("raw_unicode_escape").decode("unicode_escape")
+    return key
+
+FIREBASE_PRIVATE_KEY = _normalize_private_key(settings.firebase_private_key)
 FIREBASE_CLIENT_EMAIL = settings.firebase_client_email
 
 BINANCE_API_KEY = settings.binance_api_key
