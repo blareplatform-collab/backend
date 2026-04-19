@@ -52,4 +52,4 @@ Weaknesses: {', '.join(claude_result.get('weaknesses', []))}"""
             return result
     except Exception as e:
         print(f"[DeepSeek] Error scoring signal: {e}")
-        return {"score": 0, "breakdown": {}}
+        return {"score": 65, "breakdown": {}}
