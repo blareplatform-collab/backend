@@ -18,6 +18,8 @@ from config.settings import (
     CRYPTO_SYMBOLS, FOREX_SYMBOLS,
     INDICES_SYMBOLS, COMMODITY_SYMBOLS, AUTO_TRADE_MODE
 )
+from notifications.fcm import send_signal_notification
+from execution.router import execute_signal
 
 scheduler = AsyncIOScheduler()
 
@@ -88,10 +90,8 @@ async def scan_instrument(symbol: str, market: str, timeframe: str, strategies: 
                 if enriched:
                     _recent_signals[dedup_key] = now
                     await save_signal(enriched)
-                    from notifications.fcm import send_signal_notification
                     await send_signal_notification(enriched.to_dict())
                     if AUTO_TRADE_MODE == "auto":
-                        from execution.router import execute_signal
                         await execute_signal(enriched.to_dict())
         except Exception as e:
             print(f"[Scanner] Error scanning {symbol} {strategy_id}: {e}")
