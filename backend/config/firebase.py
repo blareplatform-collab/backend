@@ -2,28 +2,32 @@
 BLARE Firebase initialization.
 Call init_firebase() once at app startup.
 """
+import json
+import os
 import firebase_admin
 from firebase_admin import credentials, firestore
-from config.settings import (
-    FIREBASE_PROJECT_ID,
-    FIREBASE_PRIVATE_KEY,
-    FIREBASE_CLIENT_EMAIL
-)
 
 db = None
 
 
 def init_firebase():
-    """Initialize Firebase Admin SDK and Firestore client."""
+    """Initialize Firebase Admin SDK and Firestore client.
+
+    Reads the full service account JSON from the FIREBASE_CREDENTIALS
+    environment variable, parses it, and passes it directly to
+    credentials.Certificate(). This avoids PEM framing issues that arise
+    when individual key fields are reconstructed from separate env vars.
+    """
     global db
     try:
-        cred = credentials.Certificate({
-            "type": "service_account",
-            "project_id": FIREBASE_PROJECT_ID,
-            "private_key": FIREBASE_PRIVATE_KEY,
-            "client_email": FIREBASE_CLIENT_EMAIL,
-            "token_uri": "https://oauth2.googleapis.com/token",
-        })
+        raw = os.environ.get("FIREBASE_CREDENTIALS", "").strip()
+        if not raw:
+            raise ValueError(
+                "FIREBASE_CREDENTIALS environment variable is not set or empty. "
+                "Set it to the full Firebase service account JSON string."
+            )
+        service_account = json.loads(raw)
+        cred = credentials.Certificate(service_account)
         firebase_admin.initialize_app(cred)
         db = firestore.client()
         print("[Firebase] Connected successfully")
