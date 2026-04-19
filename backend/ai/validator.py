@@ -28,14 +28,21 @@ def get_position_size(confidence: int) -> float:
 async def validate_and_enrich(signal: Signal, candles: list, strategy: dict):
     signal_data = signal.to_dict()
 
-    claude_result = await validate_signal(signal_data, candles, strategy)
+    try:
+        claude_result = await validate_signal(signal_data, candles, strategy)
+        if claude_result.get("recommendation") == "skip":
+            print(f"[Validator] Signal dropped by Claude: {signal.symbol}")
+            return None
+    except Exception as e:
+        print(f"[Validator] Claude unavailable ({e}) — passing signal through")
+        claude_result = {"recommendation": "proceed", "narrative": "AI validation unavailable"}
 
-    if claude_result.get("recommendation") == "skip":
-        print(f"[Validator] Signal dropped by Claude: {signal.symbol}")
-        return None
-
-    score_result = await score_signal(signal_data, claude_result)
-    confidence = score_result.get("score", 0)
+    try:
+        score_result = await score_signal(signal_data, claude_result)
+        confidence = score_result.get("score", 0)
+    except Exception as e:
+        print(f"[Validator] DeepSeek unavailable ({e}) — using default confidence 65")
+        confidence = 65
 
     if confidence < MIN_CONFIDENCE:
         print(f"[Validator] Signal dropped — confidence {confidence} < {MIN_CONFIDENCE}")
