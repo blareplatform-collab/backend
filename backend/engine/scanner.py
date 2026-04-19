@@ -14,10 +14,7 @@ from engine.patterns.classic_ta import detect_all as detect_classic
 from models.signal import Signal
 from ai.validator import validate_and_enrich
 from config.firebase import get_db
-from config.settings import (
-    CRYPTO_SYMBOLS, FOREX_SYMBOLS,
-    INDICES_SYMBOLS, COMMODITY_SYMBOLS, AUTO_TRADE_MODE
-)
+from config.settings import CRYPTO_SYMBOLS, AUTO_TRADE_MODE
 from notifications.fcm import send_signal_notification
 from execution.router import execute_signal
 
@@ -25,12 +22,6 @@ scheduler = AsyncIOScheduler()
 
 ALL_INSTRUMENTS = [
     {"symbol": s.replace("USDT", "/USDT"), "market": "crypto"} for s in CRYPTO_SYMBOLS
-] + [
-    {"symbol": s.replace("_", "/"), "market": "forex"} for s in FOREX_SYMBOLS
-] + [
-    {"symbol": s, "market": "indices"} for s in INDICES_SYMBOLS
-] + [
-    {"symbol": s, "market": "commodities"} for s in COMMODITY_SYMBOLS
 ]
 
 SCAN_TIMEFRAMES = ["15m", "1h", "4h"]

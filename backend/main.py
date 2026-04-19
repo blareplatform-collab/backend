@@ -29,8 +29,8 @@ async def startup():
     print(f"[BLARE] Starting in {APP_ENV} mode")
     init_firebase()
 
-    from connectors import binance, oanda, alphavantage
-    from config.settings import CRYPTO_SYMBOLS, FOREX_SYMBOLS, INDICES_SYMBOLS, COMMODITY_SYMBOLS
+    from connectors import binance
+    from config.settings import CRYPTO_SYMBOLS
 
     print("[BLARE] Preloading historical data...")
 
@@ -38,15 +38,6 @@ async def startup():
         for tf in ["15m", "1h", "4h", "1d"]:
             await binance.fetch_historical(symbol, tf, limit=200)
             await asyncio.sleep(0.2)
-
-    for symbol in FOREX_SYMBOLS:
-        for tf in ["15m", "1h", "4h"]:
-            await oanda.fetch_historical(symbol.replace("_", "/"), tf, limit=200)
-            await asyncio.sleep(0.5)
-
-    for symbol in INDICES_SYMBOLS + COMMODITY_SYMBOLS:
-        await alphavantage.fetch_historical(symbol, "1h", limit=100)
-        await asyncio.sleep(15)
 
     for symbol in CRYPTO_SYMBOLS:
         for tf in ["15m", "1h", "4h"]:
