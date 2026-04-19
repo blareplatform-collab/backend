@@ -1,0 +1,36 @@
+STRATEGY_NAME: SMC Order Block Retest
+STRATEGY_ID: smc_order_block
+VERSION: 1.0
+AUTHOR: Ovi
+MARKET: crypto, forex
+DIRECTION: both
+HTF: 1d
+MTF: 4h
+LTF: 15m
+
+CONCEPT:
+Order blocks are zones where institutional orders were placed before a strong
+move. Price often returns to these zones to fill remaining orders before
+continuing in the original direction.
+
+CONDITION_1: Strong impulsive move away from a zone (2x average candle size)
+CONDITION_2: The last opposing candle before that move is identified as OB
+CONDITION_3: Price has retraced back to the OB zone
+CONDITION_4: HTF trend direction matches OB direction
+
+ENTRY_TRIGGER: Bullish reaction candle closing inside or above OB for longs. Bearish for shorts.
+ENTRY_TYPE: limit
+STOP_PLACEMENT: Below OB lower boundary for longs, above upper for shorts
+STOP_TYPE: structure_based
+TARGET_1: 50% at previous high/low
+TARGET_2: Next liquidity pool
+MINIMUM_RR: 2.0
+
+INVALIDATION_1: Price closes fully through OB without reaction
+INVALIDATION_2: New OB formed invalidating the old one
+
+DETECT_STEP_1: Calculate average body size for last 50 candles
+DETECT_STEP_2: Find candles with body >= 2x average (impulsive candles)
+DETECT_STEP_3: For each impulsive candle, identify the last opposing candle = OB
+DETECT_STEP_4: Check if current price is within OB zone boundaries
+DETECT_STEP_5: Confirm HTF alignment

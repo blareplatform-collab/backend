@@ -1,0 +1,35 @@
+STRATEGY_NAME: Wyckoff Spring Entry
+STRATEGY_ID: wyckoff_spring
+VERSION: 1.0
+AUTHOR: Ovi
+MARKET: crypto, forex, indices
+DIRECTION: long
+HTF: 1d
+MTF: 4h
+LTF: 15m
+
+CONCEPT:
+In Wyckoff accumulation, the Spring is a false breakdown below the range support
+designed to shake out weak hands before the markup phase. It is one of the highest
+probability long setups in all of technical analysis.
+
+CONDITION_1: Price in defined range for at least 20+ candles on MTF
+CONDITION_2: Multiple tests of both range high and range low (at least 2 each)
+CONDITION_3: Price briefly breaks below range support (Spring)
+CONDITION_4: Price quickly recovers back inside the range within 1-3 candles
+
+ENTRY_TRIGGER: Close back above range support after the Spring wick
+ENTRY_TYPE: market
+STOP_PLACEMENT: Below the Spring low with 0.1% buffer
+STOP_TYPE: structure_based
+TARGET_1: 50% at range midpoint
+TARGET_2: Range high and beyond
+MINIMUM_RR: 2.0
+
+INVALIDATION_1: Price closes below Spring low and continues down
+INVALIDATION_2: Range expands significantly after the Spring
+
+DETECT_STEP_1: Find 60-candle range with touches_high >= 2 and touches_low >= 2
+DETECT_STEP_2: Find candle that wicks below range_low * 0.999
+DETECT_STEP_3: Check next 1-3 candles close back above range_low
+DETECT_STEP_4: Entry on the recovery close

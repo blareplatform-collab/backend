@@ -1,0 +1,35 @@
+STRATEGY_NAME: SMC Change of Character Entry
+STRATEGY_ID: smc_choch_entry
+VERSION: 1.0
+AUTHOR: Ovi
+MARKET: crypto, forex
+DIRECTION: both
+HTF: 1d
+MTF: 4h
+LTF: 15m
+
+CONCEPT:
+A Change of Character (CHoCH) is the first break of market structure against
+the prevailing trend — the earliest signal of a reversal. Unlike BOS which
+confirms continuation, CHoCH signals that smart money may be changing direction.
+
+CONDITION_1: Clear trend established on MTF (at least 3 consecutive BOS in one direction)
+CONDITION_2: Price makes a CHoCH — breaks the first swing in the opposite direction
+CONDITION_3: Retracement back toward the CHoCH level
+CONDITION_4: HTF not strongly opposing the reversal
+
+ENTRY_TRIGGER: Retest of CHoCH level with confirming candle
+ENTRY_TYPE: limit
+STOP_PLACEMENT: Beyond the swing that created CHoCH
+STOP_TYPE: structure_based
+TARGET_1: 50% at nearest previous structure
+TARGET_2: Full trend target if HTF aligns
+MINIMUM_RR: 2.5
+
+INVALIDATION_1: Price continues in the original trend direction (CHoCH fails)
+INVALIDATION_2: HTF strongly trending against the CHoCH direction
+
+DETECT_STEP_1: Identify prevailing trend — 3+ consecutive higher highs or lower lows
+DETECT_STEP_2: Detect first break of structure against the trend = CHoCH
+DETECT_STEP_3: Check if price is retesting the CHoCH level (within 0.3%)
+DETECT_STEP_4: Look for confirming candle at the retest

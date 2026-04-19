@@ -1,0 +1,35 @@
+STRATEGY_NAME: SMC Liquidity Sweep Reversal
+STRATEGY_ID: smc_liquidity_sweep
+VERSION: 1.0
+AUTHOR: Ovi
+MARKET: crypto, forex
+DIRECTION: both
+HTF: 1d
+MTF: 4h
+LTF: 15m
+
+CONCEPT:
+Smart money hunts stop losses placed above swing highs or below swing lows.
+After sweeping liquidity, price reverses sharply. We enter on the reversal
+confirmed by a close back inside the range.
+
+CONDITION_1: Clear swing high or low visible on MTF
+CONDITION_2: Price wicks beyond the level by at least 0.1%
+CONDITION_3: Candle closes back inside the range (close-back confirmed)
+CONDITION_4: HTF bias aligns with reversal direction
+
+ENTRY_TRIGGER: Next candle open after the sweep close-back candle
+ENTRY_TYPE: market
+STOP_PLACEMENT: Beyond the sweep wick with 0.1% buffer
+STOP_TYPE: structure_based
+TARGET_1: 50% at 1:1
+TARGET_2: Previous structure level in reversal direction
+MINIMUM_RR: 2.0
+
+INVALIDATION_1: Price continues beyond sweep without closing back
+INVALIDATION_2: HTF breaks against trade direction
+
+DETECT_STEP_1: Find swing highs and lows in last 20 candles
+DETECT_STEP_2: Check if current candle wick exceeds level by > 0.1%
+DETECT_STEP_3: Check if current candle CLOSE is back inside range
+DETECT_STEP_4: Confirm HTF direction

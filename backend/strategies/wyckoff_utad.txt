@@ -1,0 +1,35 @@
+STRATEGY_NAME: Wyckoff UTAD Distribution
+STRATEGY_ID: wyckoff_utad
+VERSION: 1.0
+AUTHOR: Ovi
+MARKET: crypto, forex, indices
+DIRECTION: short
+HTF: 1d
+MTF: 4h
+LTF: 15m
+
+CONCEPT:
+UTAD (Upthrust After Distribution) is the mirror of the Spring.
+In Wyckoff distribution, the UTAD is a false breakout above range resistance
+designed to trap late buyers before the markdown phase begins.
+
+CONDITION_1: Price in defined range for at least 20+ candles on MTF
+CONDITION_2: Multiple tests of both range high and range low (at least 2 each)
+CONDITION_3: Price briefly breaks above range resistance (UTAD)
+CONDITION_4: Price quickly falls back inside the range within 1-3 candles
+
+ENTRY_TRIGGER: Close back below range resistance after the UTAD wick
+ENTRY_TYPE: market
+STOP_PLACEMENT: Above the UTAD high with 0.1% buffer
+STOP_TYPE: structure_based
+TARGET_1: 50% at range midpoint
+TARGET_2: Range low and below
+MINIMUM_RR: 2.0
+
+INVALIDATION_1: Price holds above range resistance and continues up
+INVALIDATION_2: Range expands significantly after the UTAD
+
+DETECT_STEP_1: Find 60-candle range with touches_high >= 2 and touches_low >= 2
+DETECT_STEP_2: Find candle that wicks above range_high * 1.001
+DETECT_STEP_3: Check next 1-3 candles close back below range_high
+DETECT_STEP_4: Entry on the rejection close

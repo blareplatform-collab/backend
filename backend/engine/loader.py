@@ -7,7 +7,7 @@ Adding a new strategy = drop a .txt file + restart. No code changes.
 from pathlib import Path
 from typing import Dict
 
-STRATEGIES_DIR = Path(__file__).parent.parent.parent / "strategies"
+STRATEGIES_DIR = Path(__file__).parent.parent / "strategies"
 
 _loaded_strategies: Dict[str, dict] = {}
 
