@@ -75,7 +75,10 @@ async def scan_instrument(symbol: str, market: str, timeframe: str, strategies: 
                     stop=result["stop"],
                     target=result["target"],
                 )
-                if signal.rr < strategy.get("min_rr", 2.0):
+                min_rr = max(strategy.get("min_rr", 2.0), 2.5)
+                if signal.rr < min_rr:
+                    continue
+                if timeframe == "15m" and signal.rr < 3.0:
                     continue
                 enriched = await validate_and_enrich(signal, candles, strategy)
                 if enriched:
