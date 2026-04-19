@@ -3,6 +3,7 @@ BLARE Claude AI Integration
 Sends signal context to Claude for pattern validation and trade narrative.
 """
 import json
+import asyncio
 import anthropic
 from config.settings import ANTHROPIC_API_KEY
 
@@ -54,7 +55,8 @@ Respond with JSON only:
 async def validate_signal(signal_data: dict, candles: list, strategy: dict) -> dict:
     try:
         context = build_context(signal_data, candles, strategy)
-        response = client.messages.create(
+        response = await asyncio.to_thread(
+            client.messages.create,
             model="claude-sonnet-4-6",
             max_tokens=600,
             system=SYSTEM_PROMPT,
