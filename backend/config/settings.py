@@ -4,11 +4,6 @@ class Settings(BaseSettings):
     app_env: str = "development"
     app_port: int = 8000
 
-    # Firebase
-    firebase_project_id: str = ""
-    firebase_private_key: str = ""
-    firebase_client_email: str = ""
-
     # Connectors
     binance_api_key: str = ""
     binance_api_secret: str = ""
@@ -39,19 +34,6 @@ settings = Settings()
 APP_ENV = settings.app_env
 APP_PORT = settings.app_port
 IS_DEV = APP_ENV == "development"
-
-FIREBASE_PROJECT_ID = settings.firebase_project_id
-def _normalize_private_key(raw: str) -> str:
-    """Handle Railway/env var encoding where newlines may be literal \\n."""
-    key = raw.strip()
-    if "\\n" in key:
-        key = key.replace("\\n", "\n")
-    if not key.startswith("-----BEGIN"):
-        key = key.encode("raw_unicode_escape").decode("unicode_escape")
-    return key
-
-FIREBASE_PRIVATE_KEY = _normalize_private_key(settings.firebase_private_key)
-FIREBASE_CLIENT_EMAIL = settings.firebase_client_email
 
 BINANCE_API_KEY = settings.binance_api_key
 BINANCE_API_SECRET = settings.binance_api_secret
