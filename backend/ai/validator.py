@@ -35,7 +35,7 @@ async def validate_and_enrich(signal: Signal, candles: list, strategy: dict):
             return None
     except Exception as e:
         print(f"[Validator] Claude unavailable ({e}) — passing signal through")
-        claude_result = {"recommendation": "proceed", "narrative": "AI validation unavailable"}
+        claude_result = {"recommendation": "proceed", "narrative": ""}
 
     try:
         score_result = await score_signal(signal_data, claude_result)

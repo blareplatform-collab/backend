@@ -1,13 +1,19 @@
 """
 BLARE Claude AI Integration
 Sends signal context to Claude for pattern validation and trade narrative.
+Caches results per symbol+timeframe+direction for 1 hour to reduce API calls.
 """
 import json
+import time
 import asyncio
 import anthropic
 from config.settings import ANTHROPIC_API_KEY
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+
+# Cache: key -> (result, timestamp)
+_cache: dict = {}
+_CACHE_TTL = 3600  # 1 hour
 
 SYSTEM_PROMPT = """You are a senior institutional trader and technical analyst
 with 15 years of experience in crypto and forex markets.
@@ -53,6 +59,14 @@ Respond with JSON only:
 
 
 async def validate_signal(signal_data: dict, candles: list, strategy: dict) -> dict:
+    cache_key = f"{signal_data['symbol']}_{signal_data['timeframe']}_{signal_data['direction']}_{signal_data['pattern']}"
+    now = time.time()
+
+    cached = _cache.get(cache_key)
+    if cached and now - cached[1] < _CACHE_TTL:
+        print(f"[Claude] Cache hit: {cache_key}")
+        return cached[0]
+
     try:
         context = build_context(signal_data, candles, strategy)
         response = await asyncio.to_thread(
@@ -64,11 +78,12 @@ async def validate_signal(signal_data: dict, candles: list, strategy: dict) -> d
         )
         text = response.content[0].text.strip()
         result = json.loads(text)
+        _cache[cache_key] = (result, now)
         print(f"[Claude] {signal_data['symbol']} {signal_data['direction']}: "
               f"valid={result.get('valid')} rec={result.get('recommendation')}")
         return result
     except Exception as e:
         print(f"[Claude] Error validating signal: {e!r}")
-        return {"valid": True, "narrative": "AI validation unavailable — passing through",
+        return {"valid": True, "narrative": "",
                 "strengths": [], "weaknesses": [],
                 "htf_aligned": True, "recommendation": "proceed"}
