@@ -30,6 +30,17 @@ async def check_daily_limit(account_balance: float, profile_id: str = "default")
     return True
 
 
+MIN_ORDER_USDT = 15.0  # Binance minimum + safe buffer
+
+# Minimum order quantities per symbol to avoid dust errors
+MIN_QTY = {
+    "BTCUSDT": 0.00001,
+    "ETHUSDT": 0.0001,
+    "SOLUSDT": 0.01,
+    "DEFAULT": 0.01,
+}
+
+
 def calculate_position_size(account_balance: float, risk_pct: float,
                              entry: float, stop: float) -> float:
     if entry == stop:
@@ -38,3 +49,17 @@ def calculate_position_size(account_balance: float, risk_pct: float,
     stop_distance_pct = abs(entry - stop) / entry
     quantity = risk_amount / (entry * stop_distance_pct)
     return round(quantity, 6)
+
+
+def validate_order_size(symbol: str, quantity: float, entry_price: float) -> tuple[bool, str]:
+    """Returns (is_valid, reason). Rejects orders below Binance minimums."""
+    order_value_usdt = quantity * entry_price
+    if order_value_usdt < MIN_ORDER_USDT:
+        return False, f"Order value ${order_value_usdt:.2f} below minimum ${MIN_ORDER_USDT}"
+
+    clean_symbol = symbol.replace("/", "")
+    min_qty = MIN_QTY.get(clean_symbol, MIN_QTY["DEFAULT"])
+    if quantity < min_qty:
+        return False, f"Quantity {quantity} below minimum {min_qty} for {clean_symbol}"
+
+    return True, "ok"

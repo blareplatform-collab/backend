@@ -11,7 +11,7 @@ import httpx
 from urllib.parse import urlencode
 from datetime import datetime, timezone
 from config.settings import BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_TESTNET
-from execution.risk import calculate_position_size, check_daily_limit
+from execution.risk import calculate_position_size, check_daily_limit, validate_order_size
 from config.firebase import get_db
 
 BASE_URL = "https://testnet.binance.vision" if BINANCE_TESTNET else "https://api.binance.com"
@@ -53,6 +53,11 @@ async def place_order(signal: dict, profile_id: str = "default") -> dict:
                                       signal["entry"], signal["stop"])
         if qty <= 0:
             return {"error": "Invalid position size", "executed": False}
+
+        valid, reason = validate_order_size(signal["symbol"], qty, signal["entry"])
+        if not valid:
+            print(f"[Binance] Order rejected: {reason}")
+            return {"error": reason, "executed": False}
 
         headers = {"X-MBX-APIKEY": BINANCE_API_KEY}
 
