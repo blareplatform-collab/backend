@@ -17,16 +17,32 @@ from config.firebase import get_db
 BASE_URL = "https://testnet.binance.vision" if BINANCE_TESTNET else "https://api.binance.com"
 
 
-def sign_params(params: dict) -> str:
+def _sign(params: dict, secret: str) -> str:
     query = urlencode(params)
-    return hmac.new(BINANCE_API_SECRET.encode(), query.encode(), hashlib.sha256).hexdigest()
+    return hmac.new(secret.encode(), query.encode(), hashlib.sha256).hexdigest()
 
 
-async def get_account_balance(asset: str = "USDT") -> float:
+async def _get_user_keys(profile_id: str) -> tuple[str, str]:
+    """Return (api_key, api_secret) for profile_id; falls back to Railway env vars."""
+    try:
+        if profile_id and profile_id != "default":
+            doc = get_db().collection("users").document(profile_id).get()
+            if doc.exists:
+                data = doc.to_dict()
+                key = data.get("binanceApiKey", "")
+                secret = data.get("binanceApiSecret", "")
+                if key and secret:
+                    return key, secret
+    except Exception as e:
+        print(f"[Binance] Error fetching user keys for {profile_id}: {e}")
+    return BINANCE_API_KEY, BINANCE_API_SECRET
+
+
+async def get_account_balance(api_key: str, api_secret: str, asset: str = "USDT") -> float:
     try:
         params = {"timestamp": int(time.time() * 1000)}
-        params["signature"] = sign_params(params)
-        headers = {"X-MBX-APIKEY": BINANCE_API_KEY}
+        params["signature"] = _sign(params, api_secret)
+        headers = {"X-MBX-APIKEY": api_key}
         async with httpx.AsyncClient() as client:
             res = await client.get(f"{BASE_URL}/api/v3/account",
                                    params=params, headers=headers, timeout=10)
@@ -40,12 +56,16 @@ async def get_account_balance(asset: str = "USDT") -> float:
 
 async def place_order(signal: dict, profile_id: str = "default") -> dict:
     try:
+        api_key, api_secret = await _get_user_keys(profile_id)
+        if not api_key or not api_secret:
+            return {"error": "Binance API keys not configured — add them in Settings", "executed": False}
+
         symbol = signal["symbol"].replace("/", "")
         direction = signal["direction"]
         side = "BUY" if direction == "long" else "SELL"
         opp_side = "SELL" if direction == "long" else "BUY"
 
-        balance = await get_account_balance("USDT")
+        balance = await get_account_balance(api_key, api_secret, "USDT")
         if not await check_daily_limit(balance, profile_id):
             return {"error": "Daily loss limit reached", "executed": False}
 
@@ -59,11 +79,11 @@ async def place_order(signal: dict, profile_id: str = "default") -> dict:
             print(f"[Binance] Order rejected: {reason}")
             return {"error": reason, "executed": False}
 
-        headers = {"X-MBX-APIKEY": BINANCE_API_KEY}
+        headers = {"X-MBX-APIKEY": api_key}
 
         entry_params = {"symbol": symbol, "side": side, "type": "MARKET",
                         "quantity": qty, "timestamp": int(time.time() * 1000)}
-        entry_params["signature"] = sign_params(entry_params)
+        entry_params["signature"] = _sign(entry_params, api_secret)
 
         async with httpx.AsyncClient() as client:
             entry_res = await client.post(f"{BASE_URL}/api/v3/order",
@@ -81,7 +101,7 @@ async def place_order(signal: dict, profile_id: str = "default") -> dict:
                 "stopLimitTimeInForce": "GTC",
                 "timestamp": int(time.time() * 1000)
             }
-            oco_params["signature"] = sign_params(oco_params)
+            oco_params["signature"] = _sign(oco_params, api_secret)
             oco_res = await client.post(f"{BASE_URL}/api/v3/order/oco",
                                         params=oco_params, headers=headers, timeout=10)
             oco_res.raise_for_status()

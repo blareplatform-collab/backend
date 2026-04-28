@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { subscribeToSignals } from "../utils/firestore"
+import { auth } from "../config/firebase"
 import api from "../utils/api"
 
 export const useSignalStore = create((set, get) => ({
@@ -22,7 +23,9 @@ export const useSignalStore = create((set, get) => ({
   },
 
   approveSignal: async (id) => {
-    await api.post(`/signals/${id}/approve`)
+    const uid = auth.currentUser?.uid
+    const params = uid ? { profile_id: uid } : {}
+    await api.post(`/signals/${id}/approve`, null, { params })
   },
 
   rejectSignal: async (id) => {

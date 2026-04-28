@@ -3,10 +3,12 @@ import { auth } from "../config/firebase"
 import { signOut } from "firebase/auth"
 import { saveUserProfile, getUserProfile } from "../utils/firestore"
 import { useNavigate } from "react-router-dom"
+import { useAppStore } from "../store/appStore"
 
 export default function Settings() {
   const navigate = useNavigate()
   const user = auth.currentUser
+  const setTradeMode = useAppStore(s => s.setTradeMode)
   const [profile, setProfile] = useState({
     name: "",
     binanceApiKey: "",
@@ -22,23 +24,34 @@ export default function Settings() {
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState(null)
 
   useEffect(() => {
     getUserProfile().then(data => {
-      if (data) setProfile(prev => ({ ...prev, ...data }))
+      if (data) {
+        setProfile(prev => ({ ...prev, ...data }))
+        if (data.tradeMode) setTradeMode(data.tradeMode)
+      }
     })
   }, [])
 
   const save = async () => {
     setSaving(true)
-    await saveUserProfile({
-      ...profile,
-      email: user?.email,
-      userId: user?.uid,
-    })
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    setSaveError(null)
+    try {
+      await Promise.race([
+        saveUserProfile({ ...profile, email: user?.email, userId: user?.uid }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 8000)),
+      ])
+      setTradeMode(profile.tradeMode)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    } catch (e) {
+      setSaveError(e.message === "timeout" ? "Save timed out — check your connection" : "Save failed")
+      setTimeout(() => setSaveError(null), 3000)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleSignOut = async () => {
@@ -171,6 +184,9 @@ export default function Settings() {
         </div>
       </div>
 
+      {saveError && (
+        <div className="mb-3 text-red-400 text-sm text-center">{saveError}</div>
+      )}
       <button onClick={save} disabled={saving}
         className="w-full bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white rounded-xl py-3 font-medium transition-colors">
         {saving ? "Saving..." : saved ? "Saved!" : "Save settings"}

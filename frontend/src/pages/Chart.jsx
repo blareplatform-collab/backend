@@ -62,7 +62,8 @@ export default function Chart() {
     if (!seriesRef.current) return
     setLoading(true)
     setError("")
-    api.get(`/candles/${symbol}?timeframe=${timeframe}&limit=300`)
+    const apiSymbol = symbol.replace("-", "")
+    api.get(`/candles/${apiSymbol}?timeframe=${timeframe}&limit=300`)
       .then(data => {
         if (!seriesRef.current) return
         if (!data.candles?.length) { setError("No data available"); setLoading(false); return }
